@@ -18,19 +18,19 @@ namespace BugTrackerApplication.Migrations
         protected override void Seed(BugTrackerApplication.Models.ApplicationDbContext context)
         {
             context.TicketPriorities.AddOrUpdate(x => x.Id,
-                new TicketPriority() { Title = "High" },
-                new TicketPriority() { Title = "Low" },
-                new TicketPriority() { Title = "Medium" });
+                new TicketPriority() { Id = 1, Title = "High" },
+                new TicketPriority() { Id = 2, Title = "Low" },
+                new TicketPriority() { Id = 3, Title = "Medium" });
 
             //context.TicketStatuses.AddOrUpdate(x => x.Id,
             //    new TicketStatus() { Title = "Completed" },
             //    new TicketStatus() { Title = "2" });
 
             context.TicketTypes.AddOrUpdate(x => x.Id,
-                new TicketType() { Title = "Bug Fixes" },
-                new TicketType() { Title = "Software Update" },
-                new TicketType() { Title = "Adding Helpers" },
-                new TicketType() { Title = "Database Errors" });
+                new TicketType() { Id = 1, Title = "Bug Fixes" },
+                new TicketType() { Id = 2, Title = "Software Update" },
+                new TicketType() { Id = 3, Title = "Adding Helpers" },
+                new TicketType() { Id = 4, Title = "Database Errors" });
 
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
