@@ -114,14 +114,38 @@ namespace BugTrackerApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                var ticketDb = db.Tickets.Where(p => p.Id == ticket.Id).FirstOrDefault();
+                var dateChanged = DateTimeOffset.Now;
+                var changes = new List<TicketHistory>();
 
-                ticketDb.Updated = DateTime.Now;
-                ticketDb.Title = ticket.Title;
-                ticketDb.Description = ticket.Description;
+                var dbTicket = db.Tickets.First(p => p.Id == ticket.Id);
+                dbTicket.Title = ticket.Title;
+                dbTicket.Description = ticket.Description;
+                dbTicket.TicketTypeId = ticket.TicketTypeId;
+                dbTicket.Updated = dateChanged;
 
+                var originalValues = db.Entry(dbTicket).OriginalValues;
+                var currentValues = db.Entry(dbTicket).CurrentValues;
+
+                foreach(var property in originalValues.PropertyNames)
+                {
+                    var originalValue = originalValues[property]?.ToString();
+                    var currentValue = currentValues[property]?.ToString();
+
+                    if(originalValue != currentValue)
+                    {
+                        var history = new TicketHistory();
+                        history.Changed = dateChanged;
+                        history.NewValue = GetValueFromKey(property, currentValue);
+                        history.OldValue = GetValueFromKey(property, originalValue);
+                        history.Property = property;
+                        history.TicketId = dbTicket.Id;
+                        history.UserId = User.Identity.GetUserId();
+                        changes.Add(history);
+                    }
+                }
+                db.TicketHistories.AddRange(changes);
                 db.SaveChanges();
-                return RedirectToAction("Index", "Tickets");
+                return RedirectToAction("Index");
             }
             ViewBag.AssigneeId = new SelectList(db.Users, "Id", "Name", ticket.AssigneeId);
             ViewBag.CreatorId = new SelectList(db.Users, "Id", "Name", ticket.CreatorId);
@@ -130,6 +154,27 @@ namespace BugTrackerApplication.Controllers
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Title", ticket.TicketTypeId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");
             return View(ticket);
+        }
+
+        private string GetValueFromKey(string propertyName, string key)
+        {
+            if(propertyName == "TicketTypeId")
+            {
+                return db.TicketTypes.Find(Convert.ToInt32(key)).Title;
+            }
+            if (propertyName == "TicketStatusId")
+            {
+                return db.TicketStatuses.Find(Convert.ToInt32(key)).Title;
+            }
+            if (propertyName == "TicketPriorityId")
+            {
+                return db.TicketPriorities.Find(Convert.ToInt32(key)).Title;
+            }
+            if (propertyName == "ProjectId")
+            {
+                return db.Projects.Find(Convert.ToInt32(key)).Name;
+            }
+            return key;
         }
 
         // GET: Tickets/Delete/5

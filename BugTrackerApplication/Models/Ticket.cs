@@ -24,7 +24,6 @@ namespace BugTrackerApplication.Models
         public virtual ApplicationUser Assignee { get; set; }
         public int ProjectId { get; set; }
         public virtual Project Project { get; set; }
-        public string Slug { get; set; }
         
         public Ticket()
         {
@@ -32,8 +31,6 @@ namespace BugTrackerApplication.Models
             Attachments = new HashSet<TicketAttachment>();
             Comments = new HashSet<TicketComment>();
             Histories = new HashSet<TicketHistory>();
-
-
         }
 
         public virtual ICollection<ApplicationUser> Users { get; set; }

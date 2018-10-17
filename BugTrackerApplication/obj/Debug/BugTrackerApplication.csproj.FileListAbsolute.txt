@@ -365,8 +365,8 @@ C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-maste
 C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-master\BugTrackerApplication\bin\Microsoft.AI.WindowsServer.xml
 C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-master\BugTrackerApplication\bin\Microsoft.AI.Web.xml
 C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-master\BugTrackerApplication\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-master\BugTrackerApplication\obj\Debug\BugTrackerApplication.csprojAssemblyReference.cache
 C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-master\BugTrackerApplication\obj\Debug\BugTrackerApplication.csproj.CoreCompileInputs.cache
 C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-master\BugTrackerApplication\obj\Debug\BugTrackerApplication.csproj.CopyComplete
 C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-master\BugTrackerApplication\obj\Debug\BugTrackerApplication.dll
 C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-master\BugTrackerApplication\obj\Debug\BugTrackerApplication.pdb
+C:\Users\SD05\Documents\BugTrackerApplication-master\BugTrackerApplication-master\BugTrackerApplication\obj\Debug\BugTrackerApplication.csprojAssemblyReference.cache
