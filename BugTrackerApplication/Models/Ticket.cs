@@ -24,11 +24,23 @@ namespace BugTrackerApplication.Models
         public virtual ApplicationUser Assignee { get; set; }
         public int ProjectId { get; set; }
         public virtual Project Project { get; set; }
+        public string Slug { get; set; }
+        
         public Ticket()
         {
             Users = new HashSet<ApplicationUser>();
+            Attachments = new HashSet<TicketAttachment>();
+            Comments = new HashSet<TicketComment>();
+            Histories = new HashSet<TicketHistory>();
+
+
         }
 
         public virtual ICollection<ApplicationUser> Users { get; set; }
+        public virtual ICollection<TicketAttachment> Attachments { get; set; }
+        public virtual ICollection<TicketComment> Comments { get; set; }
+        public virtual ICollection<TicketHistory> Histories { get; set; }
+
+
     }
 }

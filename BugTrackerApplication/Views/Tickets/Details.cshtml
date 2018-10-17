@@ -28,84 +28,104 @@
                             <dt>
                                 @Html.DisplayNameFor(model => model.Assignee.Name)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.Assignee.Name)
                             </dd>
-
                             <dt>
                                 @Html.DisplayNameFor(model => model.Creator.Name)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.Creator.Name)
                             </dd>
-
                             <dt>
                                 @Html.DisplayNameFor(model => model.TicketPriority.Title)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.TicketPriority.Title)
                             </dd>
-
                             <dt>
                                 @Html.DisplayNameFor(model => model.TicketStatus.Title)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.TicketStatus.Title)
                             </dd>
-
                             <dt>
                                 @Html.DisplayNameFor(model => model.TicketType.Title)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.TicketType.Title)
                             </dd>
-
                             <dt>
                                 @Html.DisplayNameFor(model => model.Title)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.Title)
                             </dd>
-
                             <dt>
                                 @Html.DisplayNameFor(model => model.Description)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.Description)
                             </dd>
-
                             <dt>
                                 @Html.DisplayNameFor(model => model.Created)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.Created)
                             </dd>
-
                             <dt>
                                 @Html.DisplayNameFor(model => model.Updated)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.Updated)
                             </dd>
-
                             <dt>
                                 @Html.DisplayNameFor(model => model.ProjectId)
                             </dt>
-
                             <dd>
                                 @Html.DisplayFor(model => model.ProjectId)
                             </dd>
-
                         </dl>
+                    </div>
+                    <div>
+                        Comments:
+                        @foreach (var comment in Model.Comments)
+                        {
+                            <p>
+                                @comment.Comment - by @comment.User.FirstName - @comment.Created.ToString("dd/MM/yyyy HH:mm")
+                            </p>
+                        }
+                    </div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div>
+                            Submit your comment!
+                        </div>
+                        <div>
+                            @using (Html.BeginForm("CreateComment", "Tickets", new { id = Model.Id }, FormMethod.Post))
+                            {
+                                <input type="hidden" name="comment" value="@Model.Id" />
+                                <textarea name="body"></textarea>
+                                <input type="submit" value="Submit" />
+                            }
+                        </div>
+                    }
+
+                    <div>Upload document</div>
+                    <div>
+                        @using (Html.BeginForm("CreateAttachment", "Tickets", new { id = Model.Id }, FormMethod.Post, new { enctype = "Multipart/form-data" }))
+
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="comment" />
+
+                            <input type="file" name="image" id="file" /><br />
+
+                            <textarea name="Description"></textarea>
+
+                            <input type="submit" value="Submit" />
+
+                        }
                     </div>
                     <p>
                         @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |

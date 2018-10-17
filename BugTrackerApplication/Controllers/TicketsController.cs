@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using BugTrackerApplication.Helpers;
 using BugTrackerApplication.Models;
 using Microsoft.AspNet.Identity;
 
@@ -24,12 +26,13 @@ namespace BugTrackerApplication.Controllers
 
         // GET: Tickets/Details/5
         [Authorize]
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            
             Ticket ticket = db.Tickets.Find(id);
             if (ticket == null)
             {
@@ -63,7 +66,6 @@ namespace BugTrackerApplication.Controllers
             if (ModelState.IsValid)
             {
                 ticket.Created = DateTime.Now;
-                ticket.TicketStatusId = 1;
                 ticket.CreatorId = User.Identity.GetUserId();
                 ticket.ProjectId = 1;
                 db.Tickets.Add(ticket);
@@ -157,6 +159,31 @@ namespace BugTrackerApplication.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [Authorize]
+        public ActionResult CreateComment(int id, string body)
+        {
+            if (id == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var ticket = db.Tickets
+               .Where(p => p.Id == id)
+               .FirstOrDefault();
+            if (ticket == null)
+            {
+                return HttpNotFound();
+            }
+            var comment = new TicketComment();
+            comment.UserId = User.Identity.GetUserId();
+            comment.TicketId = ticket.Id;
+            comment.Created = DateTime.Now;
+            comment.Comment = body;
+            db.Comments.Add(comment);
+            db.SaveChanges();
+            return RedirectToAction("Details", new { id = id });
+        }
+
         public ActionResult AssignTickets(int id)
         {
             var model = new TicketAssignViewModel();
@@ -204,7 +231,14 @@ namespace BugTrackerApplication.Controllers
         public ActionResult ShowSubmitterTickets()
         {
             var userId = User.Identity.GetUserId();
-            var tickets = db.Tickets.Where(t => t.CreatorId == userId).Include(t => t.Assignee).Include(t => t.Creator).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+            var tickets = db.Tickets
+                .Where(t => t.CreatorId == userId)
+                .Include(t=>t.Comments)
+                .Include(t => t.Assignee)
+                .Include(t => t.Creator)
+                .Include(t => t.TicketPriority)
+                .Include(t => t.TicketStatus)
+                .Include(t => t.TicketType);
             return View("Index", db.Tickets.ToList());
         }
 
@@ -212,15 +246,66 @@ namespace BugTrackerApplication.Controllers
         public ActionResult ShowDeveloperTickets()
         {
             var userId = User.Identity.GetUserId();
-            var tickets = db.Tickets.Where(t => t.AssigneeId == userId).Include(t => t.Assignee).Include(t => t.Creator).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+            var tickets = db.Tickets
+                .Where(t => t.AssigneeId == userId)
+                .Include(t => t.Comments)
+                .Include(t => t.Assignee)
+                .Include(t => t.Creator)
+                .Include(t => t.TicketPriority)
+                .Include(t => t.TicketStatus)
+                .Include(t => t.TicketType);
             return View("Index", db.Tickets.ToList());
         }
 
-        //public ActionResult Authorize()
-        //{
-        //    var userId = User.Identity.GetUserId();
-        //    db.Tickets.Where(x => x.CreatorId== userId);
-        //    return View("Index", db.Tickets.ToList());
-        //}
+        [Authorize(Roles = "Project Manager, Developer")]
+        public ActionResult ShowPMDevTickets()
+        {
+            var userId = User.Identity.GetUserId();
+            var tickets = db.Tickets
+                .Where(ticket => ticket.Project.Users.Any(user => user.Id == userId))
+                .Include(t => t.Comments)
+                .Include(t => t.Assignee)
+                .Include(t => t.Creator)
+                .Include(t => t.TicketPriority)
+                .Include(t => t.TicketStatus)
+                .Include(t => t.TicketType);
+            return View("Index", db.Tickets.ToList());
+        }
+
+        // GET: TicketAttachments/Create
+        public ActionResult CreateAttachment()
+        {
+            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title");
+            return View();
+        }
+
+        // POST: TicketAttachments/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateAttachment(int id,[Bind(Include = "Description,FilePath")] TicketAttachment ticketAttachment, HttpPostedFileBase image)
+        {
+            if (ModelState.IsValid)
+            {
+                if (ImageUploadValidator.IsWebFriendlyImage(image))
+                {
+                    var fileName = Path.GetFileName(image.FileName);
+                    image.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
+                    ticketAttachment.FilePath = "/Uploads/" + fileName;
+
+                }
+
+                ticketAttachment.TicketId = id;
+                ticketAttachment.UserId = User.Identity.GetUserId();
+                ticketAttachment.Created = DateTime.Now;
+                db.Attachments.Add(ticketAttachment);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);
+            return View(ticketAttachment);
+        }
     }
 }

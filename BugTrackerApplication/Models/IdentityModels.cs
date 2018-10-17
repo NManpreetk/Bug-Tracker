@@ -18,6 +18,9 @@ namespace BugTrackerApplication.Models
             Projects = new HashSet<Project>();
             CreatedTickets = new HashSet<Ticket>();
             AssignedTickets = new HashSet<Ticket>();
+            Attachments = new HashSet<TicketAttachment>();
+            Comments = new HashSet<TicketComment>();
+            Histories = new HashSet<TicketHistory>();
         }
 
         public virtual ICollection<Project> Projects { get; set; }
@@ -25,6 +28,11 @@ namespace BugTrackerApplication.Models
         public virtual ICollection<Ticket> CreatedTickets { get; set; }
         [InverseProperty("Assignee")]
         public virtual ICollection<Ticket> AssignedTickets { get; set; }
+
+        public virtual ICollection<TicketAttachment> Attachments { get; set; }
+        public virtual ICollection<TicketComment> Comments { get; set; }
+        public virtual ICollection<TicketHistory> Histories { get; set; }
+
 
         public string FirstName { get; internal set; }
         public string LastName { get; internal set; }
@@ -56,6 +64,8 @@ namespace BugTrackerApplication.Models
         public DbSet<TicketStatus> TicketStatuses { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<TicketType> TicketTypes { get; set; }
-        
+        public DbSet<TicketAttachment>Attachments { get; set; }
+        public DbSet<TicketComment> Comments { get; set; }
+        public DbSet<TicketHistory> Histories { get; set; }
     }
 }
