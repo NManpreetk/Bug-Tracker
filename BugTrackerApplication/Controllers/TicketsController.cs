@@ -346,7 +346,7 @@ namespace BugTrackerApplication.Controllers
                 ticketAttachment.Created = DateTime.Now;
                 db.Attachments.Add(ticketAttachment);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return View();
             }
 
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);
