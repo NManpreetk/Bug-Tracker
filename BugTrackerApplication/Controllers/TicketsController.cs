@@ -128,20 +128,26 @@ namespace BugTrackerApplication.Controllers
 
                 foreach(var property in originalValues.PropertyNames)
                 {
-                    var originalValue = originalValues[property]?.ToString();
-                    var currentValue = currentValues[property]?.ToString();
-
-                    if(originalValue != currentValue)
-                    {
-                        var history = new TicketHistory();
-                        history.Changed = dateChanged;
-                        history.NewValue = GetValueFromKey(property, currentValue);
-                        history.OldValue = GetValueFromKey(property, originalValue);
-                        history.Property = property;
-                        history.TicketId = dbTicket.Id;
-                        history.UserId = User.Identity.GetUserId();
-                        changes.Add(history);
+                    if(property == "Updated") {
                     }
+                    else
+                    {
+                        var originalValue = originalValues[property]?.ToString();
+                        var currentValue = currentValues[property]?.ToString();
+
+                        if (originalValue != currentValue)
+                        {
+                            var history = new TicketHistory();
+                            history.Changed = dateChanged;
+                            history.NewValue = GetValueFromKey(property, currentValue);
+                            history.OldValue = GetValueFromKey(property, originalValue);
+                            history.Property = property;
+                            history.TicketId = dbTicket.Id;
+                            history.UserId = User.Identity.GetUserId();
+                            changes.Add(history);
+                        }
+                    }
+                    
                 }
                 db.TicketHistories.AddRange(changes);
                 db.SaveChanges();
@@ -346,7 +352,7 @@ namespace BugTrackerApplication.Controllers
                 ticketAttachment.Created = DateTime.Now;
                 db.Attachments.Add(ticketAttachment);
                 db.SaveChanges();
-                return View();
+                return RedirectToAction("Details", new { id = id });
             }
 
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);

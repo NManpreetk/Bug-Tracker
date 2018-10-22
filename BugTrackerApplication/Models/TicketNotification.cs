@@ -11,5 +11,6 @@ namespace BugTrackerApplication.Models
         public int TicketId { get; set; } 
         public int UserId { get; set; }
         public ICollection<Ticket> Ticket { get; set; }
+
     }
 }

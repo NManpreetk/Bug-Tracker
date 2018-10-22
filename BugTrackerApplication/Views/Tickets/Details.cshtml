@@ -87,82 +87,92 @@
                             </dd>
                         </dl>
                     </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <label>
+                                        Submit your comment!
+                                    </label>
+                                    <div>
+                                        @using (Html.BeginForm("CreateComment", "Tickets", new { id = Model.Id }, FormMethod.Post))
+                                        {
+                                            <input type="hidden" name="comment" value="@Model.Id" />
+                                            <textarea name="body"></textarea>
+                                            <br />
+                                            <input type="submit" value="Submit" />
+                                        }
+                                    </div>
+                                }
+                                <div>
+                                    <label>Comments:</label>
+                                    @foreach (var comment in Model.Comments)
+                                    {
+                                        <p>
+                                            @comment.Comment
+                                        </p>
+                                        <p> - by @comment.User.FirstName <br />- @comment.Created.ToString("dd/MM/yyyy HH:mm")</p><hr />
+                                    }
+                                </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <label>Upload document</label>
+                                    <div>
+                                        @using (Html.BeginForm("CreateAttachment", "Tickets", new { id = Model.Id }, FormMethod.Post, new { enctype = "Multipart/form-data" }))
 
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <label>
-                            Submit your comment!
-                        </label>
-                        <div>
-                            @using (Html.BeginForm("CreateComment", "Tickets", new { id = Model.Id }, FormMethod.Post))
-                            {
-                                <input type="hidden" name="comment" value="@Model.Id" />
-                                <textarea name="body"></textarea>
-                                <br />
-                                <input type="submit" value="Submit" />
-                            }
-                        </div>
-                    }
-                    <div>
-                        <label>Comments:</label>
-                        @foreach (var comment in Model.Comments)
-                        {
-                            <p>
-                                @comment.Comment
-                            </p>
-                            <p> - by @comment.User.FirstName <br />- @comment.Created.ToString("dd/MM/yyyy HH:mm")</p><hr />
-                        }
-                    </div>
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="comment" />
 
-                    <label>Upload document</label>
-                    <div>
-                        @using (Html.BeginForm("CreateAttachment", "Tickets", new { id = Model.Id }, FormMethod.Post, new { enctype = "Multipart/form-data" }))
+                                            <input type="file" name="image" id="file" /><br />
+                                            <label>Description</label><br />
+                                            <textarea name="Description"></textarea>
+                                            <br />
+                                            <input type="submit" value="Submit" />
 
-                        {
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="comment" />
+                                        }
+                                        <div>
+                                            <p> <label>Uploads</label></p>
+                                            @foreach (var upload in Model.Attachments)
+                                            {
+                                                <a href="@upload.FilePath">
+                                                    @upload.FilePath
+                                                </a>
+                                                <p>@upload.Description</p>
 
-                            <input type="file" name="image" id="file" /><br />
-                            <label>Description</label><br />
-                            <textarea name="Description"></textarea>
-                            <br />
-                            <input type="submit" value="Submit" />
+                                                <p> - by @upload.User.FirstName <br />- @upload.Created.ToString("dd/MM/yyyy HH:mm")</p><hr />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
 
-                        }
-                        <div>
-                            <p> <label>Uploads</label></p>
-                            @foreach (var upload in Model.Attachments)
-                            {
-                                <a href="@upload.FilePath">
-                                    @upload.FilePath
-                                </a>
-                                <p>@upload.Description</p>
+                        <table class="table" id="table">
+                            <label>History</label>
+                            <hr />
+                            <thead>
+                                <tr>
+                                    <th>
+                                        New Value
+                                    </th>
+                                    <th>
+                                        Old Value
+                                    </th>
+                                    <th>
+                                        Property
+                                    </th>
+                                    <th>
+                                        Changed
 
-                                <p> - by @upload.User.FirstName <br />- @upload.Created.ToString("dd/MM/yyyy HH:mm")</p><hr />
-                            }
-                        </div>
-                    </div>
-                    <table class="table" id="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    New Value
-                                </th>
-                                <th>
-                                    Old Value
-                                </th>
-                                <th>
-                                    Property
-                                </th>
-
-
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Histories)
-                            {
-
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Histories)
+                                {
                                 <tr>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.NewValue)
@@ -173,17 +183,18 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Property)
                                     </td>
-
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Changed)
+                                    </td>
                                 </tr>
-
-                            }
-                        </tbody>
-                    </table>
-                    <p>
-                        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-                        @Html.ActionLink("Back to List", "Index")
-                    </p>
-                </div>
+                                }
+                            </tbody>
+                        </table>
+                        <p>
+                            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+                            @Html.ActionLink("Back to List", "Index")
+                        </p>
+                    </div>
             </div>
         </div>
     </div>
