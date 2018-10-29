@@ -14,7 +14,7 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace BugTrackerApplication.Controllers
 {
-    [Authorize]
+    [Authorize (Roles = "Admin")]
     public class ApplicationUsersController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -23,6 +23,8 @@ namespace BugTrackerApplication.Controllers
         {
             return View(db.Users.ToList());
         }
+
+        [Authorize(Roles = "Admin")]
         public ActionResult ChangeRole(string id)
         {
             var model = new UserRoleViewModel();
@@ -35,7 +37,9 @@ namespace BugTrackerApplication.Controllers
             model.Roles = new MultiSelectList(roles, "Name", "Name", userRoles);
             return View(model);
         }
+
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult ChangeRole(UserRoleViewModel model)
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));

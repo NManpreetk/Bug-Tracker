@@ -27,13 +27,12 @@ namespace BugTrackerApplication.Models
         
         public Ticket()
         {
-            Users = new HashSet<ApplicationUser>();
             Attachments = new HashSet<TicketAttachment>();
             Comments = new HashSet<TicketComment>();
             Histories = new HashSet<TicketHistory>();
         }
 
-        public virtual ICollection<ApplicationUser> Users { get; set; }
+      
         public virtual ICollection<TicketAttachment> Attachments { get; set; }
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> Histories { get; set; }

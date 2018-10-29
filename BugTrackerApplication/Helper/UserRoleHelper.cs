@@ -16,10 +16,8 @@ namespace BugTrackerApplication.Helper
         public UserRoleHelper()
         {
             Db = new ApplicationDbContext();
-            UserManager = new
-            UserManager<ApplicationUser>(new UserStore<ApplicationUser>(Db));
-            RoleManager = new
-            RoleManager<IdentityRole>(new RoleStore<IdentityRole>(Db));
+            UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(Db));
+            RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(Db));
         }
         public List<IdentityRole> GetAllRoles()
         {
@@ -28,6 +26,12 @@ namespace BugTrackerApplication.Helper
         public List<string> GetUserRoles(string id)
         {
             return UserManager.GetRoles(id).ToList();
+        }
+        public ICollection<ApplicationUser> UserInRole(string role)
+        {
+            var roleId = Db.Roles.Where(p => p.Name == role).Select(p => p.Id).FirstOrDefault();
+
+            return Db.Users.Where(p => p.Roles.Any(t => t.RoleId == roleId)).ToList();
         }
     }
 }

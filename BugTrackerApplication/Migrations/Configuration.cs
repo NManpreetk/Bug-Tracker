@@ -21,10 +21,10 @@ namespace BugTrackerApplication.Migrations
                 new TicketPriority() { Id = 1, Title = "High" },
                 new TicketPriority() { Id = 2, Title = "Low" },
                 new TicketPriority() { Id = 3, Title = "Medium" });
-
+            
             context.TicketStatuses.AddOrUpdate(x => x.Id,
-                new TicketStatus() { Id = 1, Title = "Completed" },
-                new TicketStatus() { Id = 2, Title = "Not Completed" });
+                new TicketStatus() { Id = 1, Title = "Not Completed" },
+                new TicketStatus() { Id = 2, Title = "Completed" });
 
             context.TicketTypes.AddOrUpdate(x => x.Id,
                 new TicketType() { Id = 1, Title = "Bug Fixes" },

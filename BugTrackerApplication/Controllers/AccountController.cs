@@ -62,6 +62,91 @@ namespace BugTrackerApplication.Controllers
             return View();
         }
 
+        //public ActionResult LoginAdmin()
+        //{
+        //    ApplicationDbContext db = new ApplicationDbContext();
+        //    string userId = User.Identity.GetUserId();
+        //    ApplicationUser user = db.Users.Find(userId);
+        //    SignInManager.SignIn(user, false, false);
+        //    return RedirectToAction("Index", "Home");
+        //}
+        [AllowAnonymous]
+        public ActionResult LoginAdmin()
+        {
+            var dbContext = new IdentityDbContext<IdentityUser>("DefaultConnection");
+            dbContext.Database.CreateIfNotExists();
+
+            var userStore = new UserStore<IdentityUser>(dbContext);
+            var userManager = new UserManager<IdentityUser, string>(userStore);
+            var result = userManager.Create(new IdentityUser { Id = Guid.NewGuid().ToString(), UserName = "Admin@myBugTracker.com" });
+
+            var signInManager = new SignInManager<IdentityUser, string>
+                 (userManager, System.Web.HttpContext.Current.GetOwinContext().Authentication);
+
+            var toSign = userManager.FindByName("Admin@myBugTracker.com");
+            signInManager.SignIn(toSign, false, false);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [AllowAnonymous]
+        public ActionResult LoginProjectManager()
+        {
+            var dbContext = new IdentityDbContext<IdentityUser>("DefaultConnection");
+            dbContext.Database.CreateIfNotExists();
+
+            var userStore = new UserStore<IdentityUser>(dbContext);
+            var userManager = new UserManager<IdentityUser, string>(userStore);
+            var result = userManager.Create(new IdentityUser { Id = Guid.NewGuid().ToString(), UserName = "ProjectManager@myBugTracker.com" });
+
+            var signInManager = new SignInManager<IdentityUser, string>
+                 (userManager, System.Web.HttpContext.Current.GetOwinContext().Authentication);
+
+            var toSign = userManager.FindByName("ProjectManager@myBugTracker.com");
+            signInManager.SignIn(toSign, false, false);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [AllowAnonymous]
+        public ActionResult LoginDeveloper()
+        {
+            var dbContext = new IdentityDbContext<IdentityUser>("DefaultConnection");
+            dbContext.Database.CreateIfNotExists();
+
+            var userStore = new UserStore<IdentityUser>(dbContext);
+            var userManager = new UserManager<IdentityUser, string>(userStore);
+            var result = userManager.Create(new IdentityUser { Id = Guid.NewGuid().ToString(), UserName = "Developer@myBugTracker.com" });
+
+            var signInManager = new SignInManager<IdentityUser, string>
+                 (userManager, System.Web.HttpContext.Current.GetOwinContext().Authentication);
+
+            var toSign = userManager.FindByName("Developer@myBugTracker.com");
+            signInManager.SignIn(toSign, false, false);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [AllowAnonymous]
+        public ActionResult LoginSubmitter()
+        {
+            var dbContext = new IdentityDbContext<IdentityUser>("DefaultConnection");
+            dbContext.Database.CreateIfNotExists();
+
+            var userStore = new UserStore<IdentityUser>(dbContext);
+            var userManager = new UserManager<IdentityUser, string>(userStore);
+            var result = userManager.Create(new IdentityUser { Id = Guid.NewGuid().ToString(), UserName = "submitter@myBugTracker.com" });
+
+            var signInManager = new SignInManager<IdentityUser, string>
+                 (userManager, System.Web.HttpContext.Current.GetOwinContext().Authentication);
+
+            var toSign = userManager.FindByName("submitter@myBugTracker.com");
+            signInManager.SignIn(toSign, false, false);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
         //
         // POST: /Account/Login
         [HttpPost]
@@ -82,6 +167,7 @@ namespace BugTrackerApplication.Controllers
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            
             switch (result)
             {
                 case SignInStatus.Success:
@@ -357,7 +443,6 @@ namespace BugTrackerApplication.Controllers
                     return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
         }
-
         //
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
@@ -432,7 +517,7 @@ namespace BugTrackerApplication.Controllers
             }
 
             base.Dispose(disposing);
-        }
+         }
 
 
 
@@ -493,6 +578,7 @@ namespace BugTrackerApplication.Controllers
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
         }
+
         #endregion
     }
 }

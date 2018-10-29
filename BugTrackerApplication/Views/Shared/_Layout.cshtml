@@ -90,7 +90,54 @@
                             <a href="@Url.Action("Index", "Projects")"> All Projects</a>
                         </li>
                     }
+                    <li>
+                        <a href="@Url.Action("LoginAdmin", "Account", new { id = "Admin" })">Admin</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("LoginSubmitter", "Account", new { id = "Submitter" })">Submitter</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("LoginDeveloper", "Account", new { id = "Developer" })">Developer</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("LoginProjectManager", "Account", new { id = "ProjectManager" })">ProjectManager</a>
+                    </li>
+                    @if (User.IsInRole("Submitter"))
+                    {
+                    <li>
+                        <a href="@Url.Action("ShowSubmitterTickets", "Tickets", new { id = "ProjectManager" })">Submitter Tickets</a>
+                    </li>
+                    }
+                    
+                    <li>
+                        <a href="@Url.Action("MyProjectTickets", "Tickets")">MyProjectTickets</a>
+                    </li>
+                    @if (User.IsInRole("Submitter"))
+                    {
+                        <li>
+                            <a href="@Url.Action("Create", "Tickets")">Create Ticket</a>
+                        </li>
+                    }
+                    @if (User.IsInRole("Submitter"))
+                    {
+                        <li>
+                            <a href="@Url.Action("TicketsCreatedBySubmitter", "Tickets")">My Tickets</a>
+                        </li>
+                    }
+                    @if (User.IsInRole("Developer"))
+                    {
+                        <li>
+                            <a href="@Url.Action("ShowDeveloperTickets", "Tickets")">My Tickets</a>
+                        </li>
+                    }
+                    @if (User.IsInRole("Project Manager"))
+                    {
+                        <li>
+                            <a href="@Url.Action("Index", "Projects")">Assign Projects</a>
+                        </li>
+                    }
                 </ul>
+                
             </div>
         </div>
         <div id="page-wrapper">
